@@ -5,7 +5,7 @@ using UnityEngine;
 public class ZoneWeapon : Weapon
 {
   public EnemyDamager enemyDamager;
-  private float spawnTime, spawnCounter;
+  private float cooldown, cooldownTimer;
   // Start is called before the first frame update
   void Start()
   {
@@ -21,10 +21,10 @@ public class ZoneWeapon : Weapon
       SetStats();
     }
 
-    spawnCounter -= Time.deltaTime;
-    if (spawnCounter <= 0)
+    cooldownTimer -= Time.deltaTime;
+    if (cooldownTimer <= 0)
     {
-      spawnCounter = spawnTime;
+      cooldownTimer = cooldown;
       Instantiate(enemyDamager, enemyDamager.transform.position, Quaternion.identity, transform).gameObject.SetActive(true);
       SFXManager.instance.PlayeSFXPitched(10);
     }
@@ -33,11 +33,10 @@ public class ZoneWeapon : Weapon
   void SetStats()
   {
     enemyDamager.damage = stats[weaponLevel].damage;
-    enemyDamager.lifeTime = stats[weaponLevel].duration;
-    enemyDamager.timeBetweenDamage = 1f/stats[weaponLevel].speed;
-    
+    enemyDamager.duration = stats[weaponLevel].duration;
+    enemyDamager.attackSpeed = stats[weaponLevel].attackSpeed;
     enemyDamager.transform.localScale = Vector3.one * stats[weaponLevel].range;
-    spawnTime = stats[weaponLevel].cooldown;
-    spawnCounter = 0;
+    cooldown = stats[weaponLevel].cooldown;
+    cooldownTimer = 0;
   }
 }

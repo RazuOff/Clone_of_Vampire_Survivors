@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
@@ -30,6 +30,6 @@ public class Weapon : MonoBehaviour
 [System.Serializable]
 public class WeaponStats
 {
-  public float speed, damage, range, cooldown, amount, duration;
+  public float attackSpeed, damage, range, cooldown, amount, duration;
   public string upgrateText;
 }
