@@ -27,6 +27,8 @@ public class UIController : MonoBehaviour
   public TMP_Text endTimeText;
   public string MainMenuName;
   public GameObject pauseScreen;
+  public TMP_Text fitnessText, generationText, currentFitnessText;
+
 
 
   private void Update()
@@ -59,7 +61,18 @@ public class UIController : MonoBehaviour
 
     timeText.text = "Time: " + minutes + ":" + seconds.ToString("00");
   }
-
+  public void UpdateFitness(float maxFitness)
+  {
+    fitnessText.text = "Max fitness: " + maxFitness;
+  }
+  public void UpdateGeneration(int generaion)
+  {
+    generationText.text = "Generation: " + generaion;
+  }
+  public void UpdateCurrentFitnessText(float fitness)
+  {
+    currentFitnessText.text = "Current max fitness: " + fitness;
+  }
   public void BuyMoveSpeed()
   {
     PlayerStatController.instance.BuyMoveSpeed();

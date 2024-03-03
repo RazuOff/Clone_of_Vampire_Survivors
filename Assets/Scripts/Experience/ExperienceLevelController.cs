@@ -50,57 +50,60 @@ public class ExperienceLevelController : MonoBehaviour
   }
   void LevelUp()
   {
-    currentExperience -= experienceLevels[currentLevel];
-    currentLevel++;
-    if (currentLevel > maxLevel)
+    if (!NNManager.instance.TurnOffMechanicsForNN)
     {
-      currentLevel--;
-    }
+      currentExperience -= experienceLevels[currentLevel];
+      currentLevel++;
+      if (currentLevel > maxLevel)
+      {
+        currentLevel--;
+      }
 
-    UIController.instance.levelUpPanel.SetActive(true);
-    Time.timeScale = 0f;
-    //UIController.instance.levelUpSelectionButtons[0].UpdateButtonDisplay(PlayerController.instance.activeWeapon);
-    weaponsToUpgrade.Clear();
-    List<Weapon> avaliableWeapons = new List<Weapon>();
-    avaliableWeapons.AddRange(PlayerController.instance.assignedWeapons);
+      UIController.instance.levelUpPanel.SetActive(true);
+      Time.timeScale = 0f;
+      //UIController.instance.levelUpSelectionButtons[0].UpdateButtonDisplay(PlayerController.instance.activeWeapon);
+      weaponsToUpgrade.Clear();
+      List<Weapon> avaliableWeapons = new List<Weapon>();
+      avaliableWeapons.AddRange(PlayerController.instance.assignedWeapons);
 
-    if (avaliableWeapons.Count > 0)
-    {
-      int selected = Random.Range(0,avaliableWeapons.Count);
-      weaponsToUpgrade.Add(avaliableWeapons[selected]);
-      avaliableWeapons.RemoveAt(selected);
-    }
-    if (PlayerController.instance.assignedWeapons.Count + PlayerController.instance.maxedWeapons.Count < PlayerController.instance.maxWeapons)
-      avaliableWeapons.AddRange(PlayerController.instance.unassignedWeapons);
-
-    for (int i = weaponsToUpgrade.Count; i <3; i++)
-    {
       if (avaliableWeapons.Count > 0)
       {
         int selected = Random.Range(0, avaliableWeapons.Count);
         weaponsToUpgrade.Add(avaliableWeapons[selected]);
         avaliableWeapons.RemoveAt(selected);
       }
-    }
-    for (int i = 0; i < weaponsToUpgrade.Count; i++)
-    {
-      UIController.instance.levelUpSelectionButtons[i].UpdateButtonDisplay(weaponsToUpgrade[i]);
-    }
+      if (PlayerController.instance.assignedWeapons.Count + PlayerController.instance.maxedWeapons.Count < PlayerController.instance.maxWeapons)
+        avaliableWeapons.AddRange(PlayerController.instance.unassignedWeapons);
 
-    for (int i = 0;i< UIController.instance.levelUpSelectionButtons.Length;i++)
-    {
-      if (i< weaponsToUpgrade.Count)
+      for (int i = weaponsToUpgrade.Count; i < 3; i++)
       {
-        UIController.instance.levelUpSelectionButtons[i].gameObject.SetActive(true);
+        if (avaliableWeapons.Count > 0)
+        {
+          int selected = Random.Range(0, avaliableWeapons.Count);
+          weaponsToUpgrade.Add(avaliableWeapons[selected]);
+          avaliableWeapons.RemoveAt(selected);
+        }
       }
-      else
+      for (int i = 0; i < weaponsToUpgrade.Count; i++)
       {
-        UIController.instance.levelUpSelectionButtons[i].gameObject.SetActive(false);
+        UIController.instance.levelUpSelectionButtons[i].UpdateButtonDisplay(weaponsToUpgrade[i]);
       }
+
+      for (int i = 0; i < UIController.instance.levelUpSelectionButtons.Length; i++)
+      {
+        if (i < weaponsToUpgrade.Count)
+        {
+          UIController.instance.levelUpSelectionButtons[i].gameObject.SetActive(true);
+        }
+        else
+        {
+          UIController.instance.levelUpSelectionButtons[i].gameObject.SetActive(false);
+        }
+      }
+
+
+
+      PlayerStatController.instance.UpdateDisplays();
     }
-
-
-
-    PlayerStatController.instance.UpdateDisplays();
   }
 }

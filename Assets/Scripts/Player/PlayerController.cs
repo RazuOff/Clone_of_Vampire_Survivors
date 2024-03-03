@@ -13,7 +13,8 @@ public class PlayerController : MonoBehaviour
   }
 
   public float moveSpeed;
-  
+  public Rigidbody2D theRB;
+
   public float pickupRange = 0.5f;
 
   private Animator animator;
@@ -25,6 +26,8 @@ public class PlayerController : MonoBehaviour
   public int maxWeapons = 3;
   [HideInInspector]
   public List<Weapon> maxedWeapons = new List<Weapon>();
+
+  public LayerMask enemyMask;
   // Start is called before the first frame update
   void Start()
   {
@@ -43,8 +46,12 @@ public class PlayerController : MonoBehaviour
     Vector3 moveInput = new Vector3(0f,0f,0f);
     moveInput.x = Input.GetAxisRaw("Horizontal");
     moveInput.y = Input.GetAxisRaw("Vertical");
-    
-    PlayerMove(moveInput);
+    if (NNManager.instance.TurnOffMechanicsForNN)
+    {
+      NNPlayerMove();
+    }
+    else
+      PlayerMove(moveInput);
     
 
 
@@ -61,6 +68,14 @@ public class PlayerController : MonoBehaviour
     moveInput.Normalize();
     transform.position += moveInput * moveSpeed * Time.deltaTime;
     
+  }
+  void NNPlayerMove()
+  {    
+    RaycastHit2D enemy = Physics2D.CircleCast(transform.position, 5f,transform.position, 0.1f, enemyMask);
+    if (enemy)
+      theRB.velocity = -(enemy.transform.position - transform.position).normalized * moveSpeed;
+    else
+      theRB.velocity = Vector3.zero;
   }
 
 

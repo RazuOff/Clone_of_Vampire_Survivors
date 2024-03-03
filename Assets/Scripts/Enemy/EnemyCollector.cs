@@ -21,7 +21,7 @@ public class EnemyCollector : MonoBehaviour
   {
     if (collision.gameObject.tag == "Enemy")
     {
-      Destroy(collision.gameObject);
+      collision.gameObject.GetComponent<EnemyController>().TakeDamage(999999f);
     }
 
   }
