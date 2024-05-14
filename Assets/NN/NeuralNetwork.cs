@@ -1,18 +1,86 @@
 using System.Collections.Generic;
 using System;
 using System.IO;
+using UnityEngine;
 
+[System.Serializable]
+public class NeuralNetworkListData
+{
+  public List<NeuralNetworkData> networkDataList;
+
+  public NeuralNetworkListData(List<NeuralNetwork> neuralNetworks)
+  {
+    networkDataList = new List<NeuralNetworkData>();
+    foreach (var neuralNetwork in neuralNetworks)
+    {
+      NeuralNetworkData data = new NeuralNetworkData
+      {
+        layers = neuralNetwork.layers,
+        flatNeurons = FlattenArray(neuralNetwork.neurons),
+        flatBiases = FlattenArray(neuralNetwork.biases),
+        flatWeights = FlattenArray(neuralNetwork.weights),
+        activations = neuralNetwork.activations,
+        fitness = neuralNetwork.fitness
+      };
+      networkDataList.Add(data);
+    }
+  }
+
+  private float[] FlattenArray(float[][] array)
+  {
+    List<float> flatList = new List<float>();
+    foreach (var subArray in array)
+    {
+      flatList.AddRange(subArray);
+    }
+    return flatList.ToArray();
+  }
+
+  private float[] FlattenArray(float[][][] array)
+  {
+    List<float> flatList = new List<float>();
+    foreach (var subArray2D in array)
+    {
+      foreach (var subArray in subArray2D)
+      {
+        flatList.AddRange(subArray);
+      }
+    }
+    return flatList.ToArray();
+  }
+  
+
+
+
+
+
+}
+[System.Serializable]
+public class NeuralNetworkData
+{
+  public int[] layers;
+  public float[] flatNeurons;
+  public float[] flatBiases;
+  public float[] flatWeights;
+  public int[] activations;
+  public float fitness;
+}
 
 [System.Serializable]
 public class NeuralNetwork : IComparable<NeuralNetwork>
 {
-  private int[] layers;//layers
-  private float[][] neurons;//neurons
-  private float[][] biases;//biasses
-  private float[][][] weights;//weights
-  private int[] activations;//layers
+  public int[] layers;//layers
+  public float[][] neurons;//neurons
+  public float[][] biases;//biasses
+  public float[][][] weights;//weights
+  public int[] activations;//layers
 
   public float fitness = 0;//fitness
+
+  public NeuralNetwork()
+  {
+
+  }
 
   public NeuralNetwork(int[] layers)
   {
@@ -25,6 +93,10 @@ public class NeuralNetwork : IComparable<NeuralNetwork>
     InitBiases();
     InitWeights();
   }
+
+
+  
+
 
   private void InitNeurons()//create empty storage array for the neurons in the network.
   {
@@ -156,65 +228,5 @@ public class NeuralNetwork : IComparable<NeuralNetwork>
     return nn;
   }
 
-  public void Load(string path)//this loads the biases and weights from within a file into the neural network.
-  {
-    TextReader tr = new StreamReader(path);
-    int NumberOfLines = (int)new FileInfo(path).Length;
-    string[] ListLines = new string[NumberOfLines];
-    int index = 1;
-    for (int i = 1; i < NumberOfLines; i++)
-    {
-      ListLines[i] = tr.ReadLine();
-    }
-    tr.Close();
-    if (new FileInfo(path).Length > 0)
-    {
-      for (int i = 0; i < biases.Length; i++)
-      {
-        for (int j = 0; j < biases[i].Length; j++)
-        {
-          biases[i][j] = float.Parse(ListLines[index]);
-          index++;
-        }
-      }
-
-      for (int i = 0; i < weights.Length; i++)
-      {
-        for (int j = 0; j < weights[i].Length; j++)
-        {
-          for (int k = 0; k < weights[i][j].Length; k++)
-          {
-            weights[i][j][k] = float.Parse(ListLines[index]); ;
-            index++;
-          }
-        }
-      }
-    }
-  }
-
-  public void Save(string path)//this is used for saving the biases and weights within the network to a file.
-  {
-    File.Create(path).Close();
-    StreamWriter writer = new StreamWriter(path, true);
-
-    for (int i = 0; i < biases.Length; i++)
-    {
-      for (int j = 0; j < biases[i].Length; j++)
-      {
-        writer.WriteLine(biases[i][j]);
-      }
-    }
-
-    for (int i = 0; i < weights.Length; i++)
-    {
-      for (int j = 0; j < weights[i].Length; j++)
-      {
-        for (int k = 0; k < weights[i][j].Length; k++)
-        {
-          writer.WriteLine(weights[i][j][k]);
-        }
-      }
-    }
-    writer.Close();
-  }
+  
 }

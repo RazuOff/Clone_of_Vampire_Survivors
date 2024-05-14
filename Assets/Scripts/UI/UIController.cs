@@ -5,9 +5,11 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class UIController : MonoBehaviour
 {
+  public float defultTimeScale = 2f;
 
   public static UIController instance;
 
@@ -48,7 +50,7 @@ public class UIController : MonoBehaviour
   public void SkipLevelUp()
   {
     levelUpPanel.SetActive(false);
-    Time.timeScale = 1.0f;
+    Time.timeScale = defultTimeScale;
   }
   public void UpdateCoins()
   {
@@ -97,13 +99,13 @@ public class UIController : MonoBehaviour
   public void GoToMainMenu()
   {
     SceneManager.LoadScene(MainMenuName);
-    Time.timeScale = 1;
+    Time.timeScale = defultTimeScale;
   }
 
   public void Restart()
   {
     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    Time.timeScale = 1;
+    Time.timeScale = defultTimeScale;
   }
 
   public void QuitGame()
@@ -117,12 +119,17 @@ public class UIController : MonoBehaviour
       
       pauseScreen.SetActive(false);
       if (!levelUpPanel.activeSelf)
-        Time.timeScale = 1;
+        Time.timeScale = defultTimeScale;
     }
     else
     {
       pauseScreen.SetActive(true);
       Time.timeScale = 0;
     }
+  }
+
+  public void OnSaveResults()
+  {
+    NNManager.instance.SaveNetworks();
   }
 }

@@ -50,7 +50,7 @@ public class ExperienceLevelController : MonoBehaviour
   }
   void LevelUp()
   {
-    if (!NNManager.instance.TurnOffMechanicsForNN)
+    if (!NNManager.instance.turnOnNeuralNetworkEducation)
     {
       currentExperience -= experienceLevels[currentLevel];
       currentLevel++;

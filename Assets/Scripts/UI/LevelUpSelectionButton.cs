@@ -42,7 +42,7 @@ public class LevelUpSelectionButton : MonoBehaviour
         PlayerController.instance.AddWeapon(assignedWeapon);
       }
       UIController.instance.levelUpPanel.SetActive(false);
-      Time.timeScale = 1.0f;
+      Time.timeScale = UIController.instance.defultTimeScale;
     }
   }
 }

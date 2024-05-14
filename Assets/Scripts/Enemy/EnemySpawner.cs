@@ -67,9 +67,10 @@ public class EnemySpawner : MonoBehaviour
           spawnCounter = waves[currentWave].timeBetweenSpawns;
           GameObject enemy = Instantiate(waves[currentWave].enemyToSpawn, SelectSpawnPoint(), Quaternion.identity);
           EnemyNNController enemyNNController = enemy.GetComponent<EnemyNNController>();
-
+          
           enemyNNController.SetBrain(NNManager.instance.brainsForNextGen[0]);
           NNManager.instance.brainsForNextGen.RemoveAt(0);
+          
 
           numberOfSpawned++;
         }
@@ -78,6 +79,12 @@ public class EnemySpawner : MonoBehaviour
     }
 
   }
+
+  private void LoadBrainFromSaved(EnemyNNController enemyNNController)
+  {
+
+  }
+
   public Vector3 SelectSpawnPoint()
   {
     Vector3 spawnPoint = Vector3.zero;
@@ -101,7 +108,7 @@ public class EnemySpawner : MonoBehaviour
 
   public void GoToNextWave()
   {
-    if (!NNManager.instance.TurnOffMechanicsForNN)
+    if (false)
     {
       currentWave++;
 

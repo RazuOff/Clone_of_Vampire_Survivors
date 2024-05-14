@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Main.unity
     guid: e34f673160b08a94cb7dc2cb9adb963c
+  - enabled: 1
+    path: Assets/Scenes/NeuralNetwork.unity
+    guid: 9912c3c926282b749a02f74a5f8b2f4f
   m_configObjects: {}
