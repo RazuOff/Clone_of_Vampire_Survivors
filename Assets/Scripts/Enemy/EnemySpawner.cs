@@ -137,7 +137,11 @@ public class EnemySpawner : MonoBehaviour
       currentWave = 0;
       waveCounter = waves[currentWave].waveLength;
       spawnCounter = waves[currentWave].timeBetweenSpawns;
-      numberOfSpawned = 0;
+
+      if (!NNManager.instance.turnOnNeuralNetworkEducation)
+      {
+        numberOfSpawned = 0;
+      }
     }
   }
 

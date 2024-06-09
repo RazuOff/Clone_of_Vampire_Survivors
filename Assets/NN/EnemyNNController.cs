@@ -48,23 +48,26 @@ public class EnemyNNController : EnemyController
       inputs[i + 1] = outputs[0].y;
       outputs.RemoveAt(0);
     }
-    var output = brain.FeedForward(inputs);
-
-    theRB.velocity = (new Vector3(output[0], output[1], transform.position.z)).normalized * moveSpeed;
-    
-    if (theRB.velocity == Vector2.zero)
+    if (brain != null)
     {
-      fitness = 0;
-    }
-    fitness = dealtDamage;
-    brain.fitness = fitness;
+      var output = brain.FeedForward(inputs);
 
-    if (Vector3.Distance(transform.position, targetTransfrom.position) > 30f)
-      this.TakeDamage(9999f);
-    lifeTimer -= Time.deltaTime;
-    if (lifeTimer <= 0 && NNManager.instance.turnOnNeuralNetworkEducation)
-    {
-      this.TakeDamage(9999f);
+      theRB.velocity = (new Vector3(output[0], output[1], transform.position.z)).normalized * moveSpeed;
+
+      if (theRB.velocity == Vector2.zero)
+      {
+        fitness = 0;
+      }
+      fitness = dealtDamage;
+      brain.fitness = fitness;
+
+      if (Vector3.Distance(transform.position, targetTransfrom.position) > 30f)
+        this.TakeDamage(9999f);
+      lifeTimer -= Time.deltaTime;
+      if (lifeTimer <= 0 && NNManager.instance.turnOnNeuralNetworkEducation)
+      {
+        this.TakeDamage(9999f);
+      }
     }
 
   }
