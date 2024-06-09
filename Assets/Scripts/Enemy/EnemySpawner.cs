@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.ParticleSystem;
 using Random = UnityEngine.Random;
 
@@ -20,6 +21,7 @@ public class EnemySpawner : MonoBehaviour
   private float despwanDistance;
   public List<WaveInfo> waves;
 
+  private List<NeuralNetwork> brainsFromLoad = new List<NeuralNetwork>();
   private int currentWave;
   private float waveCounter;
   private List<EnemyController> enemies = new List<EnemyController>();
@@ -52,7 +54,19 @@ public class EnemySpawner : MonoBehaviour
         }
 
         spawnCounter -= Time.deltaTime;
-        if (numberOfSpawned == NNManager.instance.populationSize)
+
+        if (!NNManager.instance.turnOnNeuralNetworkEducation)
+        {
+          if (numberOfSpawned < NNManager.instance.populationSize)
+          {
+            if (spawnCounter <= 0)
+            {
+              SpawnEnemy(brainsFromLoad);
+            }
+          }
+
+        }
+        else if (numberOfSpawned == NNManager.instance.populationSize)
         {
           if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
           {
@@ -64,15 +78,7 @@ public class EnemySpawner : MonoBehaviour
         }
         else if (spawnCounter <= 0)
         {
-          spawnCounter = waves[currentWave].timeBetweenSpawns;
-          GameObject enemy = Instantiate(waves[currentWave].enemyToSpawn, SelectSpawnPoint(), Quaternion.identity);
-          EnemyNNController enemyNNController = enemy.GetComponent<EnemyNNController>();
-          
-          enemyNNController.SetBrain(NNManager.instance.brainsForNextGen[0]);
-          NNManager.instance.brainsForNextGen.RemoveAt(0);
-          
-
-          numberOfSpawned++;
+          SpawnEnemy(NNManager.instance.brainsForNextGen);
         }
 
       }
@@ -80,10 +86,16 @@ public class EnemySpawner : MonoBehaviour
 
   }
 
-  private void LoadBrainFromSaved(EnemyNNController enemyNNController)
+  private void SpawnEnemy(List<NeuralNetwork> brains)
   {
-
+    spawnCounter = waves[currentWave].timeBetweenSpawns;
+    GameObject enemy = Instantiate(waves[currentWave].enemyToSpawn, SelectSpawnPoint(), Quaternion.identity);
+    EnemyNNController enemyNNController = enemy.GetComponent<EnemyNNController>();
+    enemyNNController.SetBrain(brains[0]);
+    brains.RemoveAt(0);
+    numberOfSpawned++;
   }
+
 
   public Vector3 SelectSpawnPoint()
   {
@@ -121,9 +133,11 @@ public class EnemySpawner : MonoBehaviour
     }
     else
     {
+      brainsFromLoad.AddRange(NNManager.instance.brainsForNextGen);
       currentWave = 0;
       waveCounter = waves[currentWave].waveLength;
       spawnCounter = waves[currentWave].timeBetweenSpawns;
+      numberOfSpawned = 0;
     }
   }
 

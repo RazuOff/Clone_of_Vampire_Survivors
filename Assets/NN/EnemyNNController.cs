@@ -11,7 +11,7 @@ public class EnemyNNController : EnemyController
   [SerializeField] private LayerMask allyMask;
   private List<Vector2> allies = new List<Vector2>();
   private NeuralNetwork brain;
-  private float lifeTime = 30f, lifeTimer;
+  private float lifeTime = 10f, lifeTimer;
 
   //ќни не мен€ют решени€ во времени, а только при спавне
   public void SetBrain(NeuralNetwork brain)
@@ -48,13 +48,9 @@ public class EnemyNNController : EnemyController
       inputs[i + 1] = outputs[0].y;
       outputs.RemoveAt(0);
     }
-
-
     var output = brain.FeedForward(inputs);
 
     theRB.velocity = (new Vector3(output[0], output[1], transform.position.z)).normalized * moveSpeed;
-
-    //float frameFitness = (Mathf.Pow(dealtDamage, 2) + 1 / Vector3.Distance(transform.position, targetTransfrom.position));
     
     if (theRB.velocity == Vector2.zero)
     {
@@ -66,10 +62,11 @@ public class EnemyNNController : EnemyController
     if (Vector3.Distance(transform.position, targetTransfrom.position) > 30f)
       this.TakeDamage(9999f);
     lifeTimer -= Time.deltaTime;
-    if (lifeTimer <= 0)
+    if (lifeTimer <= 0 && NNManager.instance.turnOnNeuralNetworkEducation)
     {
       this.TakeDamage(9999f);
     }
+
   }
 
   public void FindAllies()
@@ -100,7 +97,7 @@ public class EnemyNNController : EnemyController
       NNManager.instance.brainsFromGeneration.Add(brain);
       Destroy(gameObject);
 
-      if (!NNManager.instance.turnOnNeuralNetworkEducation)
+      if (!NNManager.instance.turnOnNeuralNetworkEducation && damage < 500f)
       {
         ExperienceLevelController.instance.SpawnExp(transform.position, expToGive);
 

@@ -39,19 +39,7 @@ public class NNManager : MonoBehaviour
   {
     instance = this;
     path = Path.Combine(Application.persistentDataPath, "brains.json");
-  }
 
-  private void OnEnable()
-  {
-    EnemySpawner.onGenerationEnd += newGeneration;
-  }
-  private void OnDisable()
-  {
-    EnemySpawner.onGenerationEnd -= newGeneration;
-  }
-
-  private void Start()
-  {
     sceneMaxFitness = 0f;
     brainsForNextGen = new List<NeuralNetwork>();
     brainsFromGeneration = new List<NeuralNetwork>();
@@ -68,8 +56,39 @@ public class NNManager : MonoBehaviour
     {
       LoadNeuralNetworks();
       Debug.Log(brainsForNextGen);
-      
+
     }
+  }
+
+  private void OnEnable()
+  {
+    EnemySpawner.onGenerationEnd += newGeneration;
+  }
+  private void OnDisable()
+  {
+    EnemySpawner.onGenerationEnd -= newGeneration;
+  }
+
+  private void Start()
+  {
+    //sceneMaxFitness = 0f;
+    //brainsForNextGen = new List<NeuralNetwork>();
+    //brainsFromGeneration = new List<NeuralNetwork>();
+    //layers = new int[] { countOfInputNeurons, 12, 12, 12, 12, 2 };
+    //if (turnOnNeuralNetworkEducation)
+    //{
+    //  for (int i = 0; i < populationSize; i++)
+    //  {
+    //    brain = new NeuralNetwork(layers);
+    //    brainsForNextGen.Add(brain);
+    //  }
+    //}
+    //else
+    //{
+    //  LoadNeuralNetworks();
+    //  Debug.Log(brainsForNextGen);
+      
+    //}
   }
 
 
@@ -187,16 +206,19 @@ public class NNManager : MonoBehaviour
   private void RestoreNeuralNetworks(NeuralNetworkListData listData)
   {
     brainsForNextGen.Clear();
+    
+
     for (int i =0; i<listData.networkDataList.Count; i++ )
     {
+      int indexOfBrain = Random.Range(0, 3);
       NeuralNetwork network = new NeuralNetwork
       {
-        layers = listData.networkDataList[0].layers,
-        neurons = UnflattenArray(listData.networkDataList[0].flatNeurons, listData.networkDataList[0].layers),
-        biases = UnflattenArray(listData.networkDataList[0].flatBiases, listData.networkDataList[0].layers),
-        weights = UnflattenWeights(listData.networkDataList[0].flatWeights, listData.networkDataList[0].layers),
-        activations = listData.networkDataList[0].activations,
-        fitness = listData.networkDataList[0].fitness
+        layers = listData.networkDataList[indexOfBrain].layers,
+        neurons = UnflattenArray(listData.networkDataList[indexOfBrain].flatNeurons, listData.networkDataList[indexOfBrain].layers),
+        biases = UnflattenArray(listData.networkDataList[indexOfBrain].flatBiases, listData.networkDataList[indexOfBrain].layers),
+        weights = UnflattenWeights(listData.networkDataList[indexOfBrain].flatWeights, listData.networkDataList[indexOfBrain].layers),
+        activations = listData.networkDataList[indexOfBrain].activations,
+        fitness = listData.networkDataList[indexOfBrain].fitness
       };
       brainsForNextGen.Add(network);
     }

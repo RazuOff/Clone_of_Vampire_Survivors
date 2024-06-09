@@ -67,7 +67,7 @@ public class NeuralNetworkData
 }
 
 [System.Serializable]
-public class NeuralNetwork : IComparable<NeuralNetwork>
+public class NeuralNetwork
 {
   public int[] layers;//layers
   public float[][] neurons;//neurons
@@ -194,39 +194,9 @@ public class NeuralNetwork : IComparable<NeuralNetwork>
     }
   }
 
-  public int CompareTo(NeuralNetwork other) //Comparing For NeuralNetworks performance.
-  {
-    if (other == null) return 1;
+  
 
-    if (fitness > other.fitness)
-      return 1;
-    else if (fitness < other.fitness)
-      return -1;
-    else
-      return 0;
-  }
-
-  public NeuralNetwork copy(NeuralNetwork nn) //For creatinga deep copy, to ensure arrays are serialzed.
-  {
-    for (int i = 0; i < biases.Length; i++)
-    {
-      for (int j = 0; j < biases[i].Length; j++)
-      {
-        nn.biases[i][j] = biases[i][j];
-      }
-    }
-    for (int i = 0; i < weights.Length; i++)
-    {
-      for (int j = 0; j < weights[i].Length; j++)
-      {
-        for (int k = 0; k < weights[i][j].Length; k++)
-        {
-          nn.weights[i][j][k] = weights[i][j][k];
-        }
-      }
-    }
-    return nn;
-  }
+  
 
   
 }
